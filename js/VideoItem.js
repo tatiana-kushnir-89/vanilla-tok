@@ -62,7 +62,11 @@ export class VideoItem {
 
   _bindEvents() {
     this._tapArea.addEventListener('click', () => this.togglePlay());
-    this._muteBtn.addEventListener('click', (e) => { e.stopPropagation(); this.toggleMute(); });
+    // кнопка мута сообщает о клике наверх, VideoFeed переключает звук глобально
+    this._muteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.element.dispatchEvent(new CustomEvent('mute-toggle', { bubbles: true }));
+    });
   }
 
   //Playback
@@ -90,14 +94,6 @@ export class VideoItem {
       this._showPlayIcon();
       this._stopProgressLoop();
     }
-  }
-
-  toggleMute() {
-    this._muted = !this._muted;
-    this._video.muted = this._muted;
-    this._muteBtn.innerHTML = this._muted
-        ? '<i class="bi bi-volume-mute-fill"></i>'
-        : '<i class="bi bi-volume-up-fill"></i>';
   }
 
   setMuted(muted) {
@@ -143,7 +139,7 @@ export class VideoItem {
     }
   }
 
-  // UI хедперы
+  // UI хелперы
   _showPlayIcon() { this._playIcon.classList.add('visible'); }
   _hidePlayIcon() { this._playIcon.classList.remove('visible'); }
 }
