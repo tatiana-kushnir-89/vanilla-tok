@@ -7,16 +7,21 @@ export class VideoFeed {
     this._container = container;
     this._items = videosData.map((data, i) => new VideoItem(data, i));
     this._currentIndex = 0;
-    this._globalMuted = true;
+    // читаем сохранённое состояние, по умолчанию muted (требование autoplay в браузерах)
+    this._globalMuted = localStorage.getItem('muted') !== 'false';
 
     this._init();
   }
 
   _init() {
-    this._items.forEach((item) => this._container.appendChild(item.element));
+    this._items.forEach((item) => {
+      this._container.appendChild(item.element);
+      item.setMuted(this._globalMuted); // применяем сохранённое состояние сразу
+    });
     this._setupObserver();
     this._setupKeyboard();
     this._setupNavArrows();
+    this._setupMuteListener();
   }
 
   // IntersectionObserver
@@ -86,6 +91,11 @@ export class VideoFeed {
     wrapper.querySelector('#btn-down').addEventListener('click', () => this.scrollNext());
   }
 
+  // слушаем событие от кнопки мута на слайде
+  _setupMuteListener() {
+    this._container.addEventListener('mute-toggle', () => this._toggleGlobalMute());
+  }
+
   // Scroll хелперы
   scrollNext() {
     const next = this._currentIndex + 1;
@@ -104,6 +114,7 @@ export class VideoFeed {
   // Global mute
   _toggleGlobalMute() {
     this._globalMuted = !this._globalMuted;
+    localStorage.setItem('muted', this._globalMuted);
     this._items.forEach((item) => item.setMuted(this._globalMuted));
   }
 }
