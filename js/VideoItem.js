@@ -2,7 +2,6 @@ export class VideoItem {
   constructor(data, index) {
     this.data = data;
     this.index = index;
-    this._muted = true;
     this._pausedByUser = false;
     this._rafId = null;
     this._isUnloaded = false;
