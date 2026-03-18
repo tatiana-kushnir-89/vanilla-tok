@@ -1,0 +1,9 @@
+{
+  "name": "vanilla-tok",
+  "version": "1.0.0",
+  "description": "TikTok-style vertical video feed. Vanilla JS + Bootstrap.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
